@@ -4,3 +4,13 @@ temp/
 *.DS_Store
 *.log
 *.swp
+www
+.temp
+.sass-cache
+bower_components
+coverage
+platforms
+plugins
+*.swo
+
+app/scripts/configuration.js
