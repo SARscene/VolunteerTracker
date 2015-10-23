@@ -20,7 +20,14 @@ var app = angular.module('app', ['ionic'])
 
       .state('app.entry',{
         url: '/entry',
-        template: 'templates/entry'
+        templateUrl: 'templates/entry.html',
+        controller: 'EntryCtrl'
+      })
+
+      .state('app.tracking', {
+        url: '/tracking',
+        templateUrl: 'templates/tracking.html',
+        controller: 'TrackingCtrl'
       });
 
   })
