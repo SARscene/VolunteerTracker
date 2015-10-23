@@ -1,0 +1,18 @@
+{
+   "volunteerID": "5675b224-a9a6-4016-8fb2-ad726c144e17",
+   "sequenceNumber": "1",
+   "searchID": "YN280RDE",
+   "gpx": {
+       "trk": {
+           "name": "Volunteer incremental payload ver 0.1",
+           "trkseg": {
+               "trkpt": {
+                  "-lat": "47.644548",
+                  "-lon": "-122.326897",
+                  "ele": "4.46",
+                  "time": "2009-10-17T18:37:26Z"
+               }
+            }
+        }
+    }
+}
