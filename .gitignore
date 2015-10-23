@@ -4,7 +4,6 @@ temp/
 *.DS_Store
 *.log
 *.swp
-www
 .temp
 .sass-cache
 bower_components
