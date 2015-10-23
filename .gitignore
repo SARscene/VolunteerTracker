@@ -11,5 +11,6 @@ coverage
 platforms
 plugins
 *.swo
+client/www/lib
 
 app/scripts/configuration.js

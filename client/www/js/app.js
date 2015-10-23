@@ -32,7 +32,8 @@ var app = angular.module('app', ['ionic'])
 
   })
 
-  .run(function($ionicPlatform) {
+  .run(function($ionicPlatform, $localstorage) {
+
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -43,5 +44,6 @@ var app = angular.module('app', ['ionic'])
         StatusBar.styleDefault();
       }
     });
-  });
 
+
+  });
