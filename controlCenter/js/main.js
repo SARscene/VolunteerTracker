@@ -108,7 +108,7 @@ var VolTrack = (function () {
     };
 
     var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
-    var path = '/api/points/' + searchId
+    var path = '/api/points/' + searchId;
 
     var client = new nes.Client('ws://localhost:3000');
 
@@ -122,7 +122,7 @@ var VolTrack = (function () {
                 var gps = {
                     lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
                     lng: p.value.gpx.trk.trkseg.trkpt['-lon']
-                }
+                };
 
                 VolTrack.addCoordinate('user1', gps.lat, gps.lng);
                 VolTrack.drawVolunteerRoute('user1');
@@ -133,16 +133,16 @@ var VolTrack = (function () {
 
     client.connect(function (err) {
         if (err)
-            console.log(err)
+            console.log(err);
     });
 
     client.subscribe(path, function (err, data) {
-        console.log(data.data)
+        console.log(data.data);
 
         var gps = {
             lat: data.data.gpx.trk.trkseg.trkpt['-lat'],
             lng: data.data.gpx.trk.trkseg.trkpt['-lon']
-        }
+        };
 
         VolTrack.addCoordinate('user1', gps.lat, gps.lng);
         VolTrack.drawVolunteerRoute('user1');
