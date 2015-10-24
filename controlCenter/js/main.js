@@ -1,5 +1,5 @@
 var VolTrack = (function () {
-
+    'use strict';
     var map = null;
 
     var volunteerCoords = {};
@@ -29,7 +29,7 @@ var VolTrack = (function () {
     };
 
     var addCoordinate = function (volunteerId, lat, long, sequence) {
-        latLngList = [];
+        var latLngList = [];
 
         initializeVoluteer(volunteerId);
 
@@ -68,6 +68,7 @@ var VolTrack = (function () {
 }());
 
 (function () {
+    'use strict';
     // Centre roughly on the Rodd Hotel.
     VolTrack.initializeMap('map', 46.235, -63.131, 15);
     // VolTrack.addCoordinate('user1', 46.235, -63.131);
