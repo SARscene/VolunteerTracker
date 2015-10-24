@@ -10,6 +10,7 @@ let Calibrate = require('calibrate');
 let HapiSwagger = require('hapi-swagger');
 let Joi = require('joi');
 let HapiLevel = require('hapi-level');
+let Path = require('path');
 
 let server = new Hapi.Server();
 server.connection({ port: 3000 });
@@ -24,12 +25,14 @@ server.register([
         { register: HapiLevel, options: { path: './temp', config: { valueEncoding: 'json' } }} 
     ], () => {
 
-    server.bind({ db: server.plugins['hapi-level'].db })
+    server.bind({ db: server.plugins['hapi-level'].db });
+
+    server.subscription('/api/points/{searchID}');
 
     server.route([
             {
                 method: 'POST',
-                path: '/points',
+                path: '/api/points',
                 config: {
                     id: 'storePoint',
                     validate: {
@@ -54,16 +57,16 @@ server.register([
                             });
                         });
                         
-                        //server.publish(`/map/${roomId}`, { message: request.payload.message });
+                        server.publish(`/api/points/${searchID}`, { data: request.payload });
                         
                     },
                     description: 'Add GPS Points',
                     tags: ['api']
                 }
-            }
-        ,   {
+            },   
+            {
                 method: 'GET',
-                path: '/points/{searchID}',
+                path: '/api/points/{searchID}',
                 config: {
                     id: 'getPoints',
                     validate: {
@@ -85,7 +88,39 @@ server.register([
                     description: "Get all map points associated with a search",
                     tags: ['api']
                 }
-            }   
+            },
+            {
+                method: 'GET',
+                path: '/{path*}',
+                handler: {
+                    file: __dirname + '/../../controlCenter/index.html'
+                }
+            },
+            {
+                method: 'GET',
+                path: '/js/{param*}',
+                handler: {
+                    directory: {
+                        path: __dirname + '/../../controlCenter/js'
+                    }
+                }
+            }, 
+            {
+                method: 'GET',
+                path: '/css/{param*}',
+                handler: {
+                    directory: {
+                        path: __dirname + '/../../controlCenter/css'
+                    }
+                }
+            },
+            {
+                method: 'GET',
+                path: '/js/nes.js',
+                handler: {
+                    file: Path.join(__dirname, '../node_modules/nes/lib/client.js')
+                }
+            }
     ]);
 
     server.start(()=>{});

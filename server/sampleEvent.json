@@ -7,8 +7,8 @@
            "name": "Volunteer incremental payload ver 0.1",
            "trkseg": {
                "trkpt": {
-                  "-lat": "47.644548",
-                  "-lon": "-122.326897",
+                  "-lat": "46.235",
+                  "-lon": "-63.131",
                   "ele": "4.46",
                   "time": "2009-10-17T18:37:26Z"
                }
