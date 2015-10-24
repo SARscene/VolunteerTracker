@@ -83,6 +83,14 @@ var VolTrack = (function () {
         volunteerCoords[volunteerId].lastKnownPinLayer.addTo(map);
     };
 
+    var drawAllVolunteerRoutes = function () {
+        var allVolunteers = Object.keys(volunteerCoords);
+
+        allVolunteers.forEach(function (volunteerId) {
+            drawVolunteerRoute(volunteerId);
+        });
+    };
+
     var eraseVolunteerRoute = function (volunteerId) {
         if (volunteerCoords[volunteerId].routeLayer) {
             map.removeLayer(volunteerCoords[volunteerId].routeLayer);
@@ -106,7 +114,8 @@ var VolTrack = (function () {
         drawVolunteerRoute: drawVolunteerRoute,
         eraseVolunteerRoute: eraseVolunteerRoute,
         changeVolunteerColor: changeVolunteerColor,
-        changeVolunteerName: changeVolunteerName
+        changeVolunteerName: changeVolunteerName,
+        drawAllVolunteerRoutes: drawAllVolunteerRoutes
     };
 }());
 
@@ -115,9 +124,6 @@ var VolTrack = (function () {
 
     // Centre roughly on the Rodd Hotel.
     VolTrack.initializeMap('map', 46.235, -63.131, 15);
-
-    // TODO - implement drawAllRoutes
-    // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
 
     var getQueryParameter = function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
@@ -128,7 +134,7 @@ var VolTrack = (function () {
     var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
     var path = '/api/points/' + searchId;
 
-    var socketHost = 'ws://' + window.location.hostname + ':3000';
+    var socketHost = 'ws://' + window.location.hostname;
 
     var client = new nes.Client(socketHost);
 
@@ -146,8 +152,9 @@ var VolTrack = (function () {
 
                 VolTrack.addCoordinate(p.value.volunteerName, gps.lat, gps.lng);
                 VolTrack.changeVolunteerName(p.value.volunteerName, p.value.volunteerName);
-                VolTrack.drawVolunteerRoute(p.value.volunteerName);
             });
+
+            VolTrack.drawAllVolunteerRoutes();
         });
     };
 
