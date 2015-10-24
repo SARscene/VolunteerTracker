@@ -42,11 +42,23 @@ var VolTrack = (function () {
     };
 
     var drawVolunteerRoute = function (volunteerId) {
+        eraseVolunteerRoute(volunteerId);
         volunteerCoords[volunteerId].layer.addTo(map);
     };
 
+    var eraseVolunteerRoute = function (volunteerId) {
+        if (volunteerCoords[volunteerId].layer) {
+            map.removeLayer(volunteerCoords[volunteerId].layer);
+        }
+    };
 
-    return {initializeMap: initializeMap, addCoordinate: addCoordinate, drawVolunteerRoute: drawVolunteerRoute};
+
+    return {
+        initializeMap: initializeMap,
+        addCoordinate: addCoordinate,
+        drawVolunteerRoute: drawVolunteerRoute,
+        eraseVolunteerRoute: eraseVolunteerRoute
+    };
 }());
 
 (function () {
@@ -59,56 +71,55 @@ var VolTrack = (function () {
     // VolTrack.addCoordinate('user1', 46.239, -63.135);
     // VolTrack.drawVolunteerRoute('user1');
     // TODO - implement drawAllRoutes
-    // TODO - remove route before drawing if exists
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
+    
+    var getQueryParameter = function (name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    };
 
+    var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
+    var path = '/api/points/' + searchId
 
-}());
+    var client = new nes.Client('ws://localhost:3000');
 
+    // Set an onConnect listener & connect to the service
+    client.onConnect = function () {
+        console.log('Service Connected');
 
-var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
-var path = '/api/points/' + searchId
+        client.request({path: path}, function (err, res) {
+            res.data.forEach(function (p) {
 
-var client = new nes.Client('ws://localhost:3000');
-// Set an onConnect listener & connect to the service
-client.onConnect = function () {
-  console.log('Service Connected');
+                var gps = {
+                    lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
+                    lng: p.value.gpx.trk.trkseg.trkpt['-lon']
+                }
 
-  client.request({path: path}, function(err, res) {
-    res.data.forEach(function(p) {
+                VolTrack.addCoordinate('user1', gps.lat, gps.lng);
+                VolTrack.drawVolunteerRoute('user1');
+
+            });
+        });
+    };
+
+    client.connect(function (err) {
+        if (err)
+            console.log(err)
+    });
+
+    client.subscribe(path, function (err, data) {
+        console.log(data.data)
 
         var gps = {
-            lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
-            lng: p.value.gpx.trk.trkseg.trkpt['-lon']
+            lat: data.data.gpx.trk.trkseg.trkpt['-lat'],
+            lng: data.data.gpx.trk.trkseg.trkpt['-lon']
         }
 
         VolTrack.addCoordinate('user1', gps.lat, gps.lng);
         VolTrack.drawVolunteerRoute('user1');
-
     });
-  });
-};
-client.connect(function (err) { 
-    if(err)
-    console.log(err) 
-});
-
-client.subscribe(path, function(err, data) {
-    console.log(data.data)
-
-    var gps = {
-        lat: data.data.gpx.trk.trkseg.trkpt['-lat'],
-        lng: data.data.gpx.trk.trkseg.trkpt['-lon']
-    }
-
-    VolTrack.addCoordinate('user1', gps.lat, gps.lng);
-    VolTrack.drawVolunteerRoute('user1');
-});
+}());
 
 
-function getQueryParameter(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
 
