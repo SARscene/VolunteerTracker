@@ -19,22 +19,16 @@ app.controller('StartCtrl', function($scope, $state)
     $personService.setName(_name);
     $personService.setRoom(_room);
     $personService.setID('1');//TODO make this a UUID
-    console.log($personService.getPerson());
+    console.dir($personService.getPerson());
 
     $state.go('app.tracking');
   };
 })
 
-.controller('TrackingCtrl', function($scope, $state, $interval, $personService){
+.controller('TrackingCtrl', function($scope, $state, $interval, $personService, $pointService){
   var watchID = null;
-  $scope.points = [];
+  $scope.pointCount = 0;
   $scope.lastPoint = "loading first point...";
-
-  //$personService.setName('Ron');
-  //$personService.setRoom('pi');
-  //$personService.setID('1');
-
-  console.dir($personService.getPerson());
 
   $scope.beingTracking = function()
   {
@@ -44,34 +38,20 @@ app.controller('StartCtrl', function($scope, $state)
       enableHighAccuracy: true
     };
 
-    try
-    {
-      watchID = $interval(function() {
-        navigator.geolocation.getCurrentPosition(function (position) {
-            console.log('point received');
-            console.dir(position);
-            $scope.lastPoint = {
-              latitude: position.coords.latitude,
-              longitude: position.coords.longitude,
-              altitude: position.coords.altitude,
-              accuracy: position.coords.accuracy,
-              altitudeAccuracy: position.coords.altitudeAccuracy,
-              heading: position.coords.heading,
-              speed: position.coords.speed,
-              timestamp: position.timestamp
-            };
-            $scope.points.push($scope.lastPoint);
-          }, function (err) {
-            console.log('failed to get point with error: ' + err.message);
-          }
-          , options);
-      }, 1000);
-    }
-    catch(err)
-    {
-      var msg = 'Error thrown setting up GPS watch: '+ err.message;
-      console.log(msg);
-    }
+    watchID = $interval(function() {
+      navigator.geolocation.getCurrentPosition(
+        function (position)
+        {
+          console.log('point received');
+          $scope.lastPoint = $pointService.add(position);
+          $scope.pointsCount = $pointService.getPointCount($personService.getPerson().currentRoom);
+        },
+        function (err)
+        {
+          console.log('failed to get point with error: ' + err.message);
+        }
+        , options);
+    }, 3000);
   };
 
   $scope.beingTracking();
@@ -80,5 +60,8 @@ app.controller('StartCtrl', function($scope, $state)
   {
     console.log('end tracking');
     $interval.cancel(watchID);
+    watchID = null;
+
+    $state.go('app');
   };
 });

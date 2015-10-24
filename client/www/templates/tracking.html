@@ -2,9 +2,13 @@
   <h3>Tracking Now...</h3>
   <div class="row">
     <div class="col">
-      Points collected: {{ points.length }}
+      Points collected: {{ pointsCount }}
     </div>
   </div>
 
   Last location: {{ lastPoint | json }}
+
+  <div ng-hide="watch != null">
+    <button ng-click="endTracking()" class="button button-block button-cancel">End Tracking</button>
+  </div>
 </ui-view>
