@@ -8,7 +8,6 @@ angular.module('app')
 
     return {
       add: function(position) {
-        console.dir(position);
         point_index++;
         position = {
           latitude: position.coords.latitude,
@@ -27,7 +26,7 @@ angular.module('app')
 
         var person = $personService.getPerson();
         // this is just for a demo - POST ALL THE THINGS
-        $http.post('http://32ec9b2e.ngrok.io/api/points', {
+        $http.post('https://32ec9b2e.ngrok.io/api/points', {
           "volunteerID": person.volunteerID,
           "volunteerName": person.volunteerName,
           "sequenceNumber": point_index,
@@ -49,7 +48,8 @@ angular.module('app')
           console.log('posted');
           console.dir(data);
         }, function(err){
-          console.log(err);
+          console.log('http failure:');
+          console.dir(err);
         });
 
         return position;

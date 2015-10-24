@@ -45,4 +45,5 @@
     <icon src="resources/ios/icon/icon-small@3x.png" width="87" height="87"/>
   </platform>
   <icon src="resources/ios/icon/icon-small@3x.png"/>
+  <allow-navigation href="*" />
 </widget>
