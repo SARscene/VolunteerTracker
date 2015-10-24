@@ -23,8 +23,6 @@ var VolTrack = (function () {
                 routeColor: getRandomColor(),
                 name: volunteerId
             };
-
-            //createVolunteerRouteLayer(volunteerId);
         }
     };
 
@@ -70,7 +68,9 @@ var VolTrack = (function () {
         volunteerCoords[volunteerId].coords.push({latLng: L.latLng(lat, long), sequence: sequence});
 
         volunteerCoords[volunteerId].coords.sort(function (coordA, coordB) {
-            return parseFloat(coordA.sequence) - parseFloat(coordB.sequence);
+            if(coordA.sequence < coordB.sequence) return -1;
+            if(coordA.sequence > coordB.sequence) return 1;
+            return 0;
         });
 
         createVolunteerRouteLayer(volunteerId);
