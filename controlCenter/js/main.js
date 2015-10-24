@@ -143,7 +143,7 @@ var VolTrack = (function () {
                 };
 
                 VolTrack.addCoordinate(p.value.volunteerID, gps.lat, gps.lng);
-                VolTrack.changeVolunteerName(p.value.volunteerID, p.value.volunteerName)
+                VolTrack.changeVolunteerName(p.value.volunteerID, p.value.volunteerName);
                 VolTrack.drawVolunteerRoute(p.value.volunteerID);
             });
         });
@@ -163,6 +163,7 @@ var VolTrack = (function () {
         };
 
         VolTrack.addCoordinate(data.data.volunteerID, gps.lat, gps.lng);
+        VolTrack.changeVolunteerName(data.data.volunteerID, data.data.volunteerName);
         VolTrack.drawVolunteerRoute(data.data.volunteerID);
     });
 }());
