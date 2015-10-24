@@ -29,21 +29,22 @@ var VolTrack = (function () {
     };
 
     var addCoordinate = function (volunteerId, lat, long, sequence) {
+        latLngList = [];
+
         initializeVoluteer(volunteerId);
 
-        volunteerCoords[volunteerId].coords.push({lat: lat, long: long, sequence: sequence});
+        volunteerCoords[volunteerId].coords.push({latLng: L.latLng(lat, long), sequence: sequence});
 
         volunteerCoords[volunteerId].coords.sort(function (coordA, coordB) {
             return parseFloat(coordA.price) - parseFloat(coordB.price);
         });
 
-        volunteerCoords[volunteerId].latLngList = [];
         volunteerCoords[volunteerId].coords.forEach(function (coord) {
-            volunteerCoords[volunteerId].latLngList.push(L.latLng(coord.lat, coord.long));
+            latLngList.push(coord.latLng);
         });
 
         map.removeLayer(volunteerCoords[volunteerId].layer);
-        volunteerCoords[volunteerId].layer = L.polyline(volunteerCoords[volunteerId].latLngList, polylineOptions);
+        volunteerCoords[volunteerId].layer = L.polyline(latLngList, polylineOptions);
     };
 
     var drawVolunteerRoute = function (volunteerId) {
