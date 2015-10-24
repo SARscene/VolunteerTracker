@@ -9,16 +9,22 @@ let Vision = require('vision');
 let Calibrate = require('calibrate');
 let HapiSwagger = require('hapi-swagger');
 let Joi = require('joi');
+let HapiLevel = require('hapi-level');
 
 let server = new Hapi.Server();
 server.connection({ port: 3000 });
 
+server.register([ 
+        Nes, 
+        Inert, 
+        Blipp, 
+        Vision, 
+        HapiSwagger, 
+        Calibrate.decorate, 
+        { register: HapiLevel, options: { path: './temp', config: { valueEncoding: 'json' } }} 
+    ], () => {
 
-let pointsStore = {};
-
-server.register([ Nes, Inert, Blipp, Vision, HapiSwagger, Calibrate.decorate ], () => {
-
-    //server.subscription('/map/{id}');
+    server.bind({ db: server.plugins['hapi-level'].db })
 
     server.route([
             {
@@ -29,41 +35,29 @@ server.register([ Nes, Inert, Blipp, Vision, HapiSwagger, Calibrate.decorate ], 
                     validate: {
                         payload: {
                             volunteerID: Joi.string(),
+                            volunteerName: Joi.string(),
                             sequenceNumber: Joi.string(),
-                            searchID: Joi.string(),
+                            searchID: Joi.string().required(),
                             gpx: Joi.object().description('gpx data')
                         }
                     },
-                    handler: (request, reply) => {
-
+                    handler: function(request, reply) {
                         let searchID = request.payload.searchID;
+                        let key = '' + Date.now();
 
-                        if(!pointsStore[searchID]) {
-                            pointsStore[searchID] = [];
-                        }
+                        let db = this.db.sublevel(searchID);
 
-                        pointsStore[searchID].push(request.payload);
+                        db.put(key, request.payload, function() {
+                            return reply.calibrate({
+                                message: 'Data Store',
+                                point: request.payload
+                            });
+                        });
                         
                         //server.publish(`/map/${roomId}`, { message: request.payload.message });
-                        return reply.calibrate({
-                            message: 'Data Store',
-                            point: request.payload
-                        });
+                        
                     },
                     description: 'Add GPS Points',
-                    tags: ['api']
-                }
-            }
-        ,   {
-                method: 'GET',
-                path: '/points',
-                config: {
-                    id: 'getAllPoints',
-                    handler: (request, reply) => {
-
-                        return reply.calibrate(pointsStore);
-                    },
-                    description: 'Returns a list of GPS Points',
                     tags: ['api']
                 }
             }
@@ -77,9 +71,16 @@ server.register([ Nes, Inert, Blipp, Vision, HapiSwagger, Calibrate.decorate ], 
                             searchID: Joi.string().required().description('ID of the search')
                         }
                     },
-                    handler: (request, reply) => {
+                    handler: function(request, reply) {
 
-                        return reply.calibrate(pointsStore[request.params.searchID])
+                        let data = [];
+                        this.db.sublevel(request.params.searchID).createReadStream()
+                            .on('data', function(chunk) {
+                                data.push(chunk)
+                            })
+                            .on('end', function() {
+                                return reply.calibrate(data);
+                            });
                     },
                     description: "Get all map points associated with a search",
                     tags: ['api']
