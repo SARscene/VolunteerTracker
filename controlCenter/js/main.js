@@ -72,8 +72,7 @@ var VolTrack = (function () {
     // VolTrack.drawVolunteerRoute('user1');
     // TODO - implement drawAllRoutes
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
-
-
+    
     var getQueryParameter = function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
@@ -84,7 +83,8 @@ var VolTrack = (function () {
     var path = '/api/points/' + searchId
 
     var client = new nes.Client('ws://localhost:3000');
-// Set an onConnect listener & connect to the service
+
+    // Set an onConnect listener & connect to the service
     client.onConnect = function () {
         console.log('Service Connected');
 
@@ -102,6 +102,7 @@ var VolTrack = (function () {
             });
         });
     };
+
     client.connect(function (err) {
         if (err)
             console.log(err)
