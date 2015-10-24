@@ -36,7 +36,7 @@ var VolTrack = (function () {
         volunteerCoords[volunteerId].coords.push({latLng: L.latLng(lat, long), sequence: sequence});
 
         volunteerCoords[volunteerId].coords.sort(function (coordA, coordB) {
-            return parseFloat(coordA.price) - parseFloat(coordB.price);
+            return parseFloat(coordA.sequence) - parseFloat(coordB.sequence);
         });
 
         volunteerCoords[volunteerId].coords.forEach(function (coord) {
