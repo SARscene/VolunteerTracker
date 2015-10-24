@@ -21,10 +21,16 @@ app.controller('StartCtrl', function($scope, $state)
   };
 })
 
-.controller('TrackingCtrl', function($scope, $state, $interval){
+.controller('TrackingCtrl', function($scope, $state, $interval, $personService){
   var watchID = null;
   $scope.points = [];
   $scope.lastPoint = "loading first point...";
+
+  $personService.setName('Ron');
+  $personService.setRoom('pi');
+  $personService.setID('1');
+
+  console.dir($personService.getPerson());
 
   $scope.beingTracking = function()
   {
