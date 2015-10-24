@@ -9,7 +9,6 @@ temp/
 bower_components
 coverage
 platforms
-plugins
 *.swo
 client/www/lib
 
