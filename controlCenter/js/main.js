@@ -4,14 +4,10 @@ var VolTrack = (function () {
 
     var volunteerCoords = {};
 
-    var polylineOptions = {
-        color: '#000'
-    };
-
     var initializeVolunteer = function (volunteerId) {
 
         if (!volunteerCoords[volunteerId]) {
-            volunteerCoords[volunteerId] = {coords: [], routeLayer: null};
+            volunteerCoords[volunteerId] = {coords: [], routeLayer: null, routeColor: '#000'};
 
             createVolunteerRouteLayer(volunteerId);
         }
@@ -25,7 +21,9 @@ var VolTrack = (function () {
         });
 
         eraseVolunteerRoute(volunteerId);
-        volunteerCoords[volunteerId].routeLayer = L.polyline(latLngList, polylineOptions);
+        volunteerCoords[volunteerId].routeLayer = L.polyline(latLngList, {
+            color: volunteerCoords[volunteerId].routeColor
+        });
     };
 
     var createVolunteerLastKnownPinLayer = function (volunteerId) {
@@ -79,12 +77,16 @@ var VolTrack = (function () {
         }
     };
 
+    var changeVolunteerColor = function (volunteerId, color) {
+        volunteerCoords[volunteerId].routeColor = color;
+    };
 
     return {
         initializeMap: initializeMap,
         addCoordinate: addCoordinate,
         drawVolunteerRoute: drawVolunteerRoute,
-        eraseVolunteerRoute: eraseVolunteerRoute
+        eraseVolunteerRoute: eraseVolunteerRoute,
+        changeVolunteerColor: changeVolunteerColor
     };
 }());
 
@@ -92,10 +94,12 @@ var VolTrack = (function () {
     'use strict';
     // Centre roughly on the Rodd Hotel.
     VolTrack.initializeMap('map', 46.235, -63.131, 15);
+    
     //VolTrack.addCoordinate('user1', 46.235, -63.131);
     //VolTrack.addCoordinate('user1', 46.237, -63.133);
     //VolTrack.addCoordinate('user1', 46.239, -63.133);
     //VolTrack.drawVolunteerRoute('user1');
+    //VolTrack.changeVolunteerColor('user1', '#FF00FF');
     //VolTrack.addCoordinate('user1', 46.239, -63.135);
     //VolTrack.drawVolunteerRoute('user1');
     // TODO - implement drawAllRoutes
