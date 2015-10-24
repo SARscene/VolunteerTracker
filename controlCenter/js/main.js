@@ -23,8 +23,6 @@ var VolTrack = (function () {
                 routeColor: getRandomColor(),
                 name: volunteerId
             };
-
-            //createVolunteerRouteLayer(volunteerId);
         }
     };
 
@@ -70,7 +68,9 @@ var VolTrack = (function () {
         volunteerCoords[volunteerId].coords.push({latLng: L.latLng(lat, long), sequence: sequence});
 
         volunteerCoords[volunteerId].coords.sort(function (coordA, coordB) {
-            return parseFloat(coordA.sequence) - parseFloat(coordB.sequence);
+            if(coordA.sequence < coordB.sequence) return -1;
+            if(coordA.sequence > coordB.sequence) return 1;
+            return 0;
         });
 
         createVolunteerRouteLayer(volunteerId);
@@ -150,7 +150,7 @@ var VolTrack = (function () {
                     lng: p.value.gpx.trk.trkseg.trkpt['-lon']
                 };
 
-                VolTrack.addCoordinate(p.value.volunteerName, gps.lat, gps.lng);
+                VolTrack.addCoordinate(p.value.volunteerName, gps.lat, gps.lng, p.value.gpx.trk.trkseg.time);
                 VolTrack.changeVolunteerName(p.value.volunteerName, p.value.volunteerName);
             });
 
@@ -171,7 +171,7 @@ var VolTrack = (function () {
             lng: data.data.gpx.trk.trkseg.trkpt['-lon']
         };
 
-        VolTrack.addCoordinate(data.data.volunteerName, gps.lat, gps.lng);
+        VolTrack.addCoordinate(data.data.volunteerName, gps.lat, gps.lng, data.data.gpx.trk.trkseg.time);
         VolTrack.changeVolunteerName(data.data.volunteerName, data.data.volunteerName);
         if (data.data.sequenceNumber % 10 === 0) {
             VolTrack.drawVolunteerRoute(data.data.volunteerName);
