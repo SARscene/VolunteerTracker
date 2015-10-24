@@ -11,9 +11,9 @@ var VolTrack = (function () {
     var initializeVoluteer = function (volunteerId) {
 
         if (!volunteerCoords[volunteerId]) {
-            volunteerCoords[volunteerId] = {coords: [], layer: null};
+            volunteerCoords[volunteerId] = {coords: [], routeLayer: null};
 
-            volunteerCoords[volunteerId].layer = L.polyline(volunteerCoords[volunteerId].coords, polylineOptions);
+            volunteerCoords[volunteerId].routeLayer = L.polyline(volunteerCoords[volunteerId].coords, polylineOptions);
         }
     };
 
@@ -43,18 +43,19 @@ var VolTrack = (function () {
             latLngList.push(coord.latLng);
         });
 
-        map.removeLayer(volunteerCoords[volunteerId].layer);
-        volunteerCoords[volunteerId].layer = L.polyline(latLngList, polylineOptions);
+        //routeLayer
+        map.removeLayer(volunteerCoords[volunteerId].routeLayer);
+        volunteerCoords[volunteerId].routeLayer = L.polyline(latLngList, polylineOptions);
     };
 
     var drawVolunteerRoute = function (volunteerId) {
         eraseVolunteerRoute(volunteerId);
-        volunteerCoords[volunteerId].layer.addTo(map);
+        volunteerCoords[volunteerId].routeLayer.addTo(map);
     };
 
     var eraseVolunteerRoute = function (volunteerId) {
-        if (volunteerCoords[volunteerId].layer) {
-            map.removeLayer(volunteerCoords[volunteerId].layer);
+        if (volunteerCoords[volunteerId].routeLayer) {
+            map.removeLayer(volunteerCoords[volunteerId].routeLayer);
         }
     };
 
