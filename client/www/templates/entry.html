@@ -1,4 +1,12 @@
-<ui-view title="Our Awesome Header">
-  ENTRY FORM
-  <button ng-click="beingTracking()" class="button button-block button-primary">Begin Tracking</button>
+<ui-view>
+  <div class="list list-inset">
+    <label class="item item-input">
+      <input type="text" placeholder="Your Name" ng-model="data.name">
+    </label>
+    <label class="item item-input">
+      <input type="text" placeholder="SearchString" ng-model="data.room">
+    </label>
+  </div>
+  <button class="button button-block button-calm" ng-click="beingTracking(data.name,data.room)">Start Searching</button>
+
 </ui-view>
