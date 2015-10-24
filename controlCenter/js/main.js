@@ -128,7 +128,9 @@ var VolTrack = (function () {
     var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
     var path = '/api/points/' + searchId;
 
-    var client = new nes.Client('ws://localhost:3000');
+    var socketHost = 'ws://' + window.location.hostname;
+
+    var client = new nes.Client(socketHost);
 
     // Set an onConnect listener & connect to the service
     client.onConnect = function () {
