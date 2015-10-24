@@ -73,52 +73,52 @@ var VolTrack = (function () {
     // TODO - implement drawAllRoutes
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
 
+
+    var getQueryParameter = function (name) {
+        name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+        var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
+        return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+    };
+
+    var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
+    var path = '/api/points/' + searchId
+
+    var client = new nes.Client('ws://localhost:3000');
+// Set an onConnect listener & connect to the service
+    client.onConnect = function () {
+        console.log('Service Connected');
+
+        client.request({path: path}, function (err, res) {
+            res.data.forEach(function (p) {
+
+                var gps = {
+                    lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
+                    lng: p.value.gpx.trk.trkseg.trkpt['-lon']
+                }
+
+                VolTrack.addCoordinate('user1', gps.lat, gps.lng);
+                VolTrack.drawVolunteerRoute('user1');
+
+            });
+        });
+    };
+    client.connect(function (err) {
+        if (err)
+            console.log(err)
+    });
+
+    client.subscribe(path, function (err, data) {
+        console.log(data.data)
+
+        var gps = {
+            lat: data.data.gpx.trk.trkseg.trkpt['-lat'],
+            lng: data.data.gpx.trk.trkseg.trkpt['-lon']
+        }
+
+        VolTrack.addCoordinate('user1', gps.lat, gps.lng);
+        VolTrack.drawVolunteerRoute('user1');
+    });
 }());
 
 
-var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
-var path = '/api/points/' + searchId
-
-var client = new nes.Client('ws://localhost:3000');
-// Set an onConnect listener & connect to the service
-client.onConnect = function () {
-    console.log('Service Connected');
-
-    client.request({path: path}, function (err, res) {
-        res.data.forEach(function (p) {
-
-            var gps = {
-                lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
-                lng: p.value.gpx.trk.trkseg.trkpt['-lon']
-            }
-
-            VolTrack.addCoordinate('user1', gps.lat, gps.lng);
-            VolTrack.drawVolunteerRoute('user1');
-
-        });
-    });
-};
-client.connect(function (err) {
-    if (err)
-        console.log(err)
-});
-
-client.subscribe(path, function (err, data) {
-    console.log(data.data)
-
-    var gps = {
-        lat: data.data.gpx.trk.trkseg.trkpt['-lat'],
-        lng: data.data.gpx.trk.trkseg.trkpt['-lon']
-    }
-
-    VolTrack.addCoordinate('user1', gps.lat, gps.lng);
-    VolTrack.drawVolunteerRoute('user1');
-});
-
-
-function getQueryParameter(name) {
-    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
-    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-}
 
