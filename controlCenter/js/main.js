@@ -42,11 +42,23 @@ var VolTrack = (function () {
     };
 
     var drawVolunteerRoute = function (volunteerId) {
+        eraseVolunteerRoute(volunteerId);
         volunteerCoords[volunteerId].layer.addTo(map);
     };
 
+    var eraseVolunteerRoute = function (volunteerId) {
+        if (volunteerCoords[volunteerId].layer) {
+            map.removeLayer(volunteerCoords[volunteerId].layer);
+        }
+    };
 
-    return {initializeMap: initializeMap, addCoordinate: addCoordinate, drawVolunteerRoute: drawVolunteerRoute};
+
+    return {
+        initializeMap: initializeMap,
+        addCoordinate: addCoordinate,
+        drawVolunteerRoute: drawVolunteerRoute,
+        eraseVolunteerRoute: eraseVolunteerRoute
+    };
 }());
 
 (function () {
@@ -62,7 +74,6 @@ var VolTrack = (function () {
     // TODO - remove route before drawing if exists
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
 
-
 }());
 
 
@@ -72,28 +83,28 @@ var path = '/api/points/' + searchId
 var client = new nes.Client('ws://localhost:3000');
 // Set an onConnect listener & connect to the service
 client.onConnect = function () {
-  console.log('Service Connected');
+    console.log('Service Connected');
 
-  client.request({path: path}, function(err, res) {
-    res.data.forEach(function(p) {
+    client.request({path: path}, function (err, res) {
+        res.data.forEach(function (p) {
 
-        var gps = {
-            lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
-            lng: p.value.gpx.trk.trkseg.trkpt['-lon']
-        }
+            var gps = {
+                lat: p.value.gpx.trk.trkseg.trkpt['-lat'],
+                lng: p.value.gpx.trk.trkseg.trkpt['-lon']
+            }
 
-        VolTrack.addCoordinate('user1', gps.lat, gps.lng);
-        VolTrack.drawVolunteerRoute('user1');
+            VolTrack.addCoordinate('user1', gps.lat, gps.lng);
+            VolTrack.drawVolunteerRoute('user1');
 
+        });
     });
-  });
 };
-client.connect(function (err) { 
-    if(err)
-    console.log(err) 
+client.connect(function (err) {
+    if (err)
+        console.log(err)
 });
 
-client.subscribe(path, function(err, data) {
+client.subscribe(path, function (err, data) {
     console.log(data.data)
 
     var gps = {
