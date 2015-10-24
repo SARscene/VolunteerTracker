@@ -43,7 +43,6 @@ var VolTrack = (function () {
             latLngList.push(coord.latLng);
         });
 
-        //routeLayer
         map.removeLayer(volunteerCoords[volunteerId].routeLayer);
         volunteerCoords[volunteerId].routeLayer = L.polyline(latLngList, polylineOptions);
     };
