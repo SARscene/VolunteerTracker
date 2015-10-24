@@ -1,5 +1,10 @@
 <ui-view>
-  <h1>Tracking Now...</h1>
+  <h3>Tracking Now...</h3>
+  <div class="row">
+    <div class="col">
+      Points collected: {{ points.length }}
+    </div>
+  </div>
 
-  {{ lastPoint | json }}
+  Last location: {{ lastPoint | json }}
 </ui-view>
