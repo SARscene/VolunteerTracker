@@ -7,7 +7,22 @@ var VolTrack = (function () {
     var initializeVolunteer = function (volunteerId) {
 
         if (!volunteerCoords[volunteerId]) {
-            volunteerCoords[volunteerId] = {coords: [], routeLayer: null, routeColor: '#000'};
+
+            var getRandomColor = function () {
+                var letters = '0123456789ABCDEF'.split('');
+                var color = '#';
+                for (var i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            };
+
+            volunteerCoords[volunteerId] = {
+                coords: [],
+                routeLayer: null,
+                routeColor: getRandomColor(),
+                name: volunteerId
+            };
 
             createVolunteerRouteLayer(volunteerId);
         }
@@ -32,7 +47,7 @@ var VolTrack = (function () {
 
         if (coordListLength > 0) {
             lngLang = volunteerCoords[volunteerId].coords[coordListLength - 1].latLng;
-            volunteerCoords[volunteerId].lastKnownPinLayer = L.marker(lngLang, {title: volunteerId});
+            volunteerCoords[volunteerId].lastKnownPinLayer = L.marker(lngLang, {title: volunteerCoords[volunteerId].name});
         } else {
             volunteerCoords[volunteerId].lastKnownPinLayer = null;
         }
@@ -81,27 +96,26 @@ var VolTrack = (function () {
         volunteerCoords[volunteerId].routeColor = color;
     };
 
+    var changeVolunteerName = function (volunteerId, name) {
+        volunteerCoords[volunteerId].name = name;
+    };
+
     return {
         initializeMap: initializeMap,
         addCoordinate: addCoordinate,
         drawVolunteerRoute: drawVolunteerRoute,
         eraseVolunteerRoute: eraseVolunteerRoute,
-        changeVolunteerColor: changeVolunteerColor
+        changeVolunteerColor: changeVolunteerColor,
+        changeVolunteerName: changeVolunteerName
     };
 }());
 
 (function () {
     'use strict';
+
     // Centre roughly on the Rodd Hotel.
     VolTrack.initializeMap('map', 46.235, -63.131, 15);
-    
-    //VolTrack.addCoordinate('user1', 46.235, -63.131);
-    //VolTrack.addCoordinate('user1', 46.237, -63.133);
-    //VolTrack.addCoordinate('user1', 46.239, -63.133);
-    //VolTrack.drawVolunteerRoute('user1');
-    //VolTrack.changeVolunteerColor('user1', '#FF00FF');
-    //VolTrack.addCoordinate('user1', 46.239, -63.135);
-    //VolTrack.drawVolunteerRoute('user1');
+
     // TODO - implement drawAllRoutes
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
 
@@ -128,9 +142,9 @@ var VolTrack = (function () {
                     lng: p.value.gpx.trk.trkseg.trkpt['-lon']
                 };
 
-                VolTrack.addCoordinate('user1', gps.lat, gps.lng);
-                VolTrack.drawVolunteerRoute('user1');
-
+                VolTrack.addCoordinate(p.value.volunteerID, gps.lat, gps.lng);
+                VolTrack.changeVolunteerName(p.value.volunteerID, p.value.volunteerName)
+                VolTrack.drawVolunteerRoute(p.value.volunteerID);
             });
         });
     };
@@ -148,7 +162,7 @@ var VolTrack = (function () {
             lng: data.data.gpx.trk.trkseg.trkpt['-lon']
         };
 
-        VolTrack.addCoordinate('user1', gps.lat, gps.lng);
-        VolTrack.drawVolunteerRoute('user1');
+        VolTrack.addCoordinate(data.data.volunteerID, gps.lat, gps.lng);
+        VolTrack.drawVolunteerRoute(data.data.volunteerID);
     });
 }());
