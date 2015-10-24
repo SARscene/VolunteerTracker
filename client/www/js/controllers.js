@@ -31,8 +31,7 @@ app.controller('StartCtrl', function($scope, $state)
     console.log('tracking now');
 
     var options = {
-      enableHighAccuracy: true,
-      frequency: 1000
+      enableHighAccuracy: true
     };
 
     try
@@ -56,7 +55,7 @@ app.controller('StartCtrl', function($scope, $state)
             console.log('failed to get point with error: ' + err.message);
           }
           , options);
-      });
+      }, 1000);
     }
     catch(err)
     {
