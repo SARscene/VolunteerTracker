@@ -178,3 +178,5 @@ var VolTrack = (function () {
         }
     });
 }());
+
+window.onresize = function(){ location.reload(); }
