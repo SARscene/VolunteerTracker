@@ -8,7 +8,7 @@ var VolTrack = (function () {
         color: '#000'
     };
 
-    var initializeVoluteer = function (volunteerId) {
+    var initializeVolunteer = function (volunteerId) {
 
         if (!volunteerCoords[volunteerId]) {
             volunteerCoords[volunteerId] = {coords: [], routeLayer: null};
@@ -52,7 +52,7 @@ var VolTrack = (function () {
     };
 
     var addCoordinate = function (volunteerId, lat, long, sequence) {
-        initializeVoluteer(volunteerId);
+        initializeVolunteer(volunteerId);
 
         volunteerCoords[volunteerId].coords.push({latLng: L.latLng(lat, long), sequence: sequence});
 
