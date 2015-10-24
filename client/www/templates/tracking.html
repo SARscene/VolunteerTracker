@@ -1,4 +1,4 @@
-<ui-view>
+<ui-view  class="fullbodied">
   <h3>Tracking Now...</h3>
   <div class="row">
     <div class="col">
@@ -11,4 +11,10 @@
   <div ng-hide="watch != null">
     <button ng-click="endTracking()" class="button button-block button-cancel">End Tracking</button>
   </div>
+
+  <!--<IFRAME  ng-src="http://32ec9b2e.ngrok.io/?id=NotBob" class="fullbodied" > If you can see this, your browser doesn't understand IFRAMES.  </IFRAME>-->
+
+  <IFRAME  ng-src="{{room|mapEmbedUrl}}" class="fullbodied" > If you can see this, your browser doesn't understand IFRAMES.  </IFRAME>
+
+
 </ui-view>

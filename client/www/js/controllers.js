@@ -1,3 +1,10 @@
+app.filter('mapEmbedUrl', function ($sce) {
+      return function(room) {
+        return $sce.trustAsResourceUrl('http://32ec9b2e.ngrok.io/?id=' + room);
+      };
+    });
+
+
 app.controller('StartCtrl', function($scope, $state)
 {
   console.log('starting app');
@@ -29,7 +36,7 @@ app.controller('StartCtrl', function($scope, $state)
   var watchID = null;
   $scope.pointCount = 0;
   $scope.lastPoint = "loading first point...";
-
+  $scope.room = $personService.getPerson().currentRoom;
   $scope.beingTracking = function()
   {
     console.log('tracking now');
