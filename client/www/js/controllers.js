@@ -58,7 +58,7 @@ app.controller('StartCtrl', function($scope, $state)
           console.log('failed to get point with error: ' + err.message);
         }
         , options);
-    }, 3000);
+    }, 10000);
   };
 
   $scope.beingTracking();
