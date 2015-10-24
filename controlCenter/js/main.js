@@ -71,7 +71,6 @@ var VolTrack = (function () {
     // VolTrack.addCoordinate('user1', 46.239, -63.135);
     // VolTrack.drawVolunteerRoute('user1');
     // TODO - implement drawAllRoutes
-    // TODO - remove route before drawing if exists
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
 
 }());
