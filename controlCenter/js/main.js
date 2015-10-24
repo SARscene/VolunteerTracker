@@ -24,7 +24,7 @@ var VolTrack = (function () {
                 name: volunteerId
             };
 
-            createVolunteerRouteLayer(volunteerId);
+            //createVolunteerRouteLayer(volunteerId);
         }
     };
 
@@ -128,7 +128,7 @@ var VolTrack = (function () {
     var searchId = getQueryParameter('id') ? getQueryParameter('id') : 'general';
     var path = '/api/points/' + searchId;
 
-    var socketHost = 'ws://' + window.location.hostname;
+    var socketHost = 'ws://' + window.location.hostname + ':3000';
 
     var client = new nes.Client(socketHost);
 
