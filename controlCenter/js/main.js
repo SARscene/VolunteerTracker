@@ -8,6 +8,15 @@ var VolTrack = (function () {
         color: '#000'
     };
 
+    var initializeVoluteer = function (volunteerId) {
+
+        if (!volunteerCoords[volunteerId]) {
+            volunteerCoords[volunteerId] = {coords: [], layer: null};
+
+            volunteerCoords[volunteerId].layer = L.polyline(volunteerCoords[volunteerId].coords, polylineOptions);
+        }
+    };
+
     var initializeMap = function (domId, lat, long, zoom) {
         map = L.map(domId).setView([lat, long], zoom);
 
@@ -20,11 +29,7 @@ var VolTrack = (function () {
     };
 
     var addCoordinate = function (volunteerId, lat, long, sequence) {
-        if (!volunteerCoords[volunteerId]) {
-            volunteerCoords[volunteerId] = {coords: [], layer: null};
-
-            volunteerCoords[volunteerId].layer = L.polyline(volunteerCoords[volunteerId].coords, polylineOptions);
-        }
+        initializeVoluteer(volunteerId);
 
         volunteerCoords[volunteerId].coords.push({lat: lat, long: long, sequence: sequence});
 
@@ -72,7 +77,7 @@ var VolTrack = (function () {
     // VolTrack.drawVolunteerRoute('user1');
     // TODO - implement drawAllRoutes
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
-    
+
     var getQueryParameter = function (name) {
         name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
         var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"), results = regex.exec(location.search);
