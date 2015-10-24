@@ -153,6 +153,34 @@ server.register([
                 description: "Get all map points associated with a search",
                 tags: ['api']
             }
+        }, 
+        {
+            method: 'GET',
+            path: '/api/points/{searchID}/{volunteerName}',
+            config: {
+                id: 'getPointsForVolunteer',
+                validate: {
+                    params: {
+                        searchID: Joi.string().required().description('ID of the search'),
+                        volunteerName: Joi.string().required().description('Name of the volunteer')
+                    }
+                },
+                handler: function(request, reply) {
+
+                    let data = [];
+                    this.db.sublevel(request.params.searchID).createReadStream()
+                        .on('data', function(chunk) {
+                            if(chunk.value.volunteerName == request.params.volunteerName) {
+                                data.push(chunk)
+                            }
+                        })
+                        .on('end', function() {
+                            return reply.calibrate(data);
+                        });
+                },
+                description: "Get all map points associated with a search for a particular user",
+                tags: ['api']
+            }
         },
 
         // Load the control center UI
