@@ -1,6 +1,6 @@
 app.filter('mapEmbedUrl', function ($sce) {
       return function(room) {
-        return $sce.trustAsResourceUrl('http://32ec9b2e.ngrok.io/?id=' + room);
+        return $sce.trustAsResourceUrl('https://32ec9b2e.ngrok.io/?id=' + room);
       };
     });
 
