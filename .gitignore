@@ -4,7 +4,6 @@ temp/
 *.DS_Store
 *.log
 *.swp
-www
 .temp
 .sass-cache
 bower_components
@@ -12,5 +11,6 @@ coverage
 platforms
 plugins
 *.swo
+client/www/lib
 
 app/scripts/configuration.js

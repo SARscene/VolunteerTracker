@@ -20,12 +20,20 @@ var app = angular.module('app', ['ionic'])
 
       .state('app.entry',{
         url: '/entry',
-        template: 'templates/entry'
+        templateUrl: 'templates/entry.html',
+        controller: 'EntryCtrl'
+      })
+
+      .state('app.tracking', {
+        url: '/tracking',
+        templateUrl: 'templates/tracking.html',
+        controller: 'TrackingCtrl'
       });
 
   })
 
-  .run(function($ionicPlatform) {
+  .run(function($ionicPlatform, $localstorage) {
+
     $ionicPlatform.ready(function() {
       // Hide the accessory bar by default (remove this to show the accessory bar above the keyboard
       // for form inputs)
@@ -36,5 +44,6 @@ var app = angular.module('app', ['ionic'])
         StatusBar.styleDefault();
       }
     });
-  });
 
+
+  });
