@@ -13,7 +13,30 @@ var VolTrack = (function () {
         if (!volunteerCoords[volunteerId]) {
             volunteerCoords[volunteerId] = {coords: [], routeLayer: null};
 
-            volunteerCoords[volunteerId].routeLayer = L.polyline(volunteerCoords[volunteerId].coords, polylineOptions);
+            createVolunteerRouteLayer(volunteerId);
+        }
+    };
+
+    var createVolunteerRouteLayer = function (volunteerId) {
+        var latLngList = [];
+
+        volunteerCoords[volunteerId].coords.forEach(function (coord) {
+            latLngList.push(coord.latLng);
+        });
+
+        eraseVolunteerRoute(volunteerId);
+        volunteerCoords[volunteerId].routeLayer = L.polyline(latLngList, polylineOptions);
+    };
+
+    var createVolunteerLastKnownPinLayer = function (volunteerId) {
+        var coordListLength = volunteerCoords[volunteerId].coords.length;
+        var lngLang = null;
+
+        if (coordListLength > 0) {
+            lngLang = volunteerCoords[volunteerId].coords[coordListLength - 1].latLng;
+            volunteerCoords[volunteerId].lastKnownPinLayer = L.marker(lngLang, {title: volunteerId});
+        } else {
+            volunteerCoords[volunteerId].lastKnownPinLayer = null;
         }
     };
 
@@ -29,8 +52,6 @@ var VolTrack = (function () {
     };
 
     var addCoordinate = function (volunteerId, lat, long, sequence) {
-        var latLngList = [];
-
         initializeVoluteer(volunteerId);
 
         volunteerCoords[volunteerId].coords.push({latLng: L.latLng(lat, long), sequence: sequence});
@@ -39,22 +60,22 @@ var VolTrack = (function () {
             return parseFloat(coordA.sequence) - parseFloat(coordB.sequence);
         });
 
-        volunteerCoords[volunteerId].coords.forEach(function (coord) {
-            latLngList.push(coord.latLng);
-        });
-
-        map.removeLayer(volunteerCoords[volunteerId].routeLayer);
-        volunteerCoords[volunteerId].routeLayer = L.polyline(latLngList, polylineOptions);
+        createVolunteerRouteLayer(volunteerId);
+        createVolunteerLastKnownPinLayer(volunteerId);
     };
 
     var drawVolunteerRoute = function (volunteerId) {
         eraseVolunteerRoute(volunteerId);
         volunteerCoords[volunteerId].routeLayer.addTo(map);
+        volunteerCoords[volunteerId].lastKnownPinLayer.addTo(map);
     };
 
     var eraseVolunteerRoute = function (volunteerId) {
         if (volunteerCoords[volunteerId].routeLayer) {
             map.removeLayer(volunteerCoords[volunteerId].routeLayer);
+        }
+        if (volunteerCoords[volunteerId].lastKnownPinLayer) {
+            map.removeLayer(volunteerCoords[volunteerId].lastKnownPinLayer);
         }
     };
 
@@ -70,13 +91,13 @@ var VolTrack = (function () {
 (function () {
     'use strict';
     // Centre roughly on the Rodd Hotel.
-    VolTrack.initializeMap('map', 46.235, -63.131, 15);
-    // VolTrack.addCoordinate('user1', 46.235, -63.131);
-    // VolTrack.addCoordinate('user1', 46.237, -63.133);
-    // VolTrack.addCoordinate('user1', 46.239, -63.133);
-    // VolTrack.drawVolunteerRoute('user1');
-    // VolTrack.addCoordinate('user1', 46.239, -63.135);
-    // VolTrack.drawVolunteerRoute('user1');
+    //VolTrack.initializeMap('map', 46.235, -63.131, 15);
+    //VolTrack.addCoordinate('user1', 46.235, -63.131);
+    //VolTrack.addCoordinate('user1', 46.237, -63.133);
+    //VolTrack.addCoordinate('user1', 46.239, -63.133);
+    //VolTrack.drawVolunteerRoute('user1');
+    //VolTrack.addCoordinate('user1', 46.239, -63.135);
+    //VolTrack.drawVolunteerRoute('user1');
     // TODO - implement drawAllRoutes
     // TODO - drawAllRoutes should use drawVolunteerRoute, looping over volunteerCoord keys
 
@@ -127,6 +148,3 @@ var VolTrack = (function () {
         VolTrack.drawVolunteerRoute('user1');
     });
 }());
-
-
-
