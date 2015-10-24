@@ -11,11 +11,15 @@ app.controller('StartCtrl', function($scope, $state)
 })
 
 
-.controller('EntryCtrl', function($scope, $state)
+.controller('EntryCtrl', function($scope, $state, $personService)
 {
-  $scope.beingTracking = function()
+  $scope.beingTracking = function(_name, _room)
   {
     console.log('start tracking');
+    $personService.setName(_name);
+    $personService.setRoom(_room);
+    $personService.setID('1');//TODO make this a UUID
+    console.log($personService.getPerson());
 
     $state.go('app.tracking');
   };
@@ -26,9 +30,9 @@ app.controller('StartCtrl', function($scope, $state)
   $scope.points = [];
   $scope.lastPoint = "loading first point...";
 
-  $personService.setName('Ron');
-  $personService.setRoom('pi');
-  $personService.setID('1');
+  //$personService.setName('Ron');
+  //$personService.setRoom('pi');
+  //$personService.setID('1');
 
   console.dir($personService.getPerson());
 
