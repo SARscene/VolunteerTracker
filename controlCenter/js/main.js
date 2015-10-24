@@ -91,7 +91,7 @@ var VolTrack = (function () {
 (function () {
     'use strict';
     // Centre roughly on the Rodd Hotel.
-    //VolTrack.initializeMap('map', 46.235, -63.131, 15);
+    VolTrack.initializeMap('map', 46.235, -63.131, 15);
     //VolTrack.addCoordinate('user1', 46.235, -63.131);
     //VolTrack.addCoordinate('user1', 46.237, -63.133);
     //VolTrack.addCoordinate('user1', 46.239, -63.133);
