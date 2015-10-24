@@ -18,7 +18,7 @@ app.controller('StartCtrl', function($scope, $state)
     console.log('start tracking');
     $personService.setName(_name);
     $personService.setRoom(_room);
-    $personService.setID('1');//TODO make this a UUID
+    $personService.setID(new Date().getTime());
     console.dir($personService.getPerson());
 
     $state.go('app.tracking');
