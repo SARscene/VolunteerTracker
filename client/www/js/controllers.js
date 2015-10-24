@@ -32,7 +32,7 @@ app.controller('StartCtrl', function($scope, $state)
 
     var options = {
       enableHighAccuracy: true,
-      frequency: 100
+      frequency: 1000
     };
 
     try
