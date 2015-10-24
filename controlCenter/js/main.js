@@ -164,6 +164,8 @@ var VolTrack = (function () {
 
         VolTrack.addCoordinate(data.data.volunteerName, gps.lat, gps.lng);
         VolTrack.changeVolunteerName(data.data.volunteerName, data.data.volunteerName);
-        VolTrack.drawVolunteerRoute(data.data.volunteerName);
+        if (data.data.sequenceNumber % 10 === 0) {
+            VolTrack.drawVolunteerRoute(data.data.volunteerName);
+        }
     });
 }());
