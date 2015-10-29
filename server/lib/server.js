@@ -13,7 +13,12 @@ let HapiLevel = require('hapi-level');
 let Path = require('path');
 let Request = require('superagent');
 
-let liveUrl = "https://live-operations.center/api/publish/room_sarscene_ig0x26zl4s8?access_token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiJ1c2VyfjBpZzB3dGRwdSFpZzB3dGRwdXNvc2QwaGwiLCIkZG9jdHlwZSI6InVzZXIiLCIkb3BfdGltZSI6MTQ0NTQzODg2NjE0MywiJHNlcnZlcl9yZXYiOiIzLWIxNzk3NmVmNTNkZjg5OTc5YzkzNGQxMWNkZmMzYmRiIiwiZmlyc3RuYW1lIjoiU2Fyc2NlbmUiLCJ1c2VybmFtZSI6InNhcnNjZW5lIiwiZW1haWwiOiJqbkBxYXpzLmdxIiwib3JnIjoic2Fyc2NlbmUiLCJyb2xlcyI6WyJvcmdfc2Fyc2NlbmVfdXNlciJdLCJpYXQiOjE0NDU0Mzg4NjksImV4cCI6MTQ0NjA0MzY2OX0.1LW07d0axK3bDyedQzEefy5x57J8NZN-SzkA1fXd9Dg";
+let LiveIntegration = {
+    url: "https://live-operations.center/api/publish/",
+    target: "room_sarscene_ig0x26zl4s8",
+    token: "?access_token=YOURTOKENHERE",
+    enabled: false
+}
 
 let server = new Hapi.Server();
 server.connection({ port: 3000, routes: { cors: true } });
@@ -94,35 +99,38 @@ server.register([
                         });
                     });
 
-                    let livePayload = { 
-                        "type": "info_item", 
-                        "subtype": "search_teams", 
-                        "action": "save", 
-                        "document": { 
-                            "_id": "info_item~search_teams~0ig55y99n!ig55y99n8cw6ar7",  
-                            "$subtype": "search_teams", 
-                            "name":"Team Alpha", 
-                            "data": { 
-                                "position": { 
-                                    "lat": request.payload.gpx.trk.trkseg.trkpt['-lat'], 
-                                    "lng": request.payload.gpx.trk.trkseg.trkpt['-lon']
-                                } 
+                    if(LiveIntegration.enabled) {
+
+                        let livePayload = { 
+                            "type": "info_item", 
+                            "subtype": "search_teams", 
+                            "action": "save", 
+                            "document": { 
+                                "_id": "info_item~search_teams~0ig55y99n!ig55y99n8cw6ar7",  
+                                "$subtype": "search_teams", 
+                                "name":"Team Alpha", 
+                                "data": { 
+                                    "position": { 
+                                        "lat": request.payload.gpx.trk.trkseg.trkpt['-lat'], 
+                                        "lng": request.payload.gpx.trk.trkseg.trkpt['-lon']
+                                    } 
+                                }
                             }
                         }
-                    }
 
-                    Request
-                       .post(liveUrl)
-                       .send(livePayload)
-                       .set('Content-Type', 'application/json')
-                       .set('Accept', 'application/json')
-                       .end(function(err, res){
-                         if (res.ok) {
-                           console.log('yay got ' + JSON.stringify(res.body));
-                         } else {
-                           console.log('Oh no! error ' + res.text);
-                         }
-                       });
+                        Request
+                           .post(liveUrl)
+                           .send(livePayload)
+                           .set('Content-Type', 'application/json')
+                           .set('Accept', 'application/json')
+                           .end(function(err, res){
+                             if (res.ok) {
+                               console.log('yay got ' + JSON.stringify(res.body));
+                             } else {
+                               console.log('Oh no! error ' + res.text);
+                             }
+                           });
+                    }
 
                 },
                 description: 'Add GPS Points',
